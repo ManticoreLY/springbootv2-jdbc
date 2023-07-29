@@ -22,14 +22,9 @@ public class UserDao implements UserService {
 
     private RowMapper<User> rowMapper = new BeanPropertyRowMapper<>(User.class);
 
-    private void initRowMapper() {
-        this.rowMapper = new BeanPropertyRowMapper<>(User.class);
-    }
-
     @Override
     public ResponsePack findUserById(String id) {
         String sql = "select * from tb_user where user_id = ?";
-        this.initRowMapper();
         try {
             User user = jdbcTemplate.queryForObject(sql, this.rowMapper, id);
             return new ResponsePack(user).success();
@@ -41,7 +36,6 @@ public class UserDao implements UserService {
     @Override
     public List<User> findUserListByProjId(String projectId) {
         String sql = "select * from tb_user where project_id = ?";
-        this.initRowMapper();
         List<User> list = jdbcTemplate.query(sql, this.rowMapper, projectId);
         return list;
     }
