@@ -47,14 +47,25 @@ public class UserDao implements UserService {
 
     @Override
     public ResponsePack userLogin(String phoneNum, String password) {
-        String sql = "select * from tb_user where phone_num = ? and password = ? and status != -1";
+        String sql = "select * from tb_user where phone_num = ? and password = ? and status = 1";
         try{
             List<User> list = jdbcTemplate.query(sql, this.rowMapper, phoneNum, password);
             if (list.size() > 0) return new ResponsePack(list.get(0)).success();
-            else return new ResponsePack().fail("The user doesn't exist!");
+            else return new ResponsePack().fail("账号密码不正确或账户已停用!");
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponsePack().fail("login fail");
+        }
+    }
+
+    @Override
+    public ResponsePack findAll() {
+      String sql = "select * from tb_user where status != -1";
+        try{
+            List<User> list = jdbcTemplate.query(sql, this.rowMapper);
+            return new ResponsePack(list).success();
+        } catch (Exception e) {
+            return new ResponsePack().fail();
         }
     }
 
@@ -74,7 +85,6 @@ public class UserDao implements UserService {
             }
         }
         String sql = sb.toString();
-        System.out.println(sql);
         try{
             List<User> list = jdbcTemplate.query(sql, this.rowMapper);
             return new ResponsePack(list).success();

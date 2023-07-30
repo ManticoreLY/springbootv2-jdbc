@@ -23,4 +23,6 @@ public interface UserService {
     ResponsePack saveUser(User user);
 
     ResponsePack updateUser(User user);
+
+    ResponsePack findAll();
 }

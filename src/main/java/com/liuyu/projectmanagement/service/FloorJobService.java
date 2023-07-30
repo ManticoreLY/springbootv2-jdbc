@@ -18,6 +18,10 @@ public interface FloorJobService extends BaseService<FloorJob>{
 
     ResponsePack listFloorJobInfo(String buildingId);
 
+    ResponsePack findAll(String projectId);
+
+    ResponsePack save(FloorJob floorJob, String projectId);
+
     ResponsePack setFinishCount(String id, Double finishCount);
 
     ResponsePack setFloorProgress(String floorId);

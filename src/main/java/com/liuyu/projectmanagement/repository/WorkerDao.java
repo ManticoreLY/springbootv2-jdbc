@@ -35,9 +35,9 @@ public class WorkerDao implements WorkerService {
 
     @Override
     public ResponsePack save(Worker worker, String projectId) {
-        String sql = "insert into tb_worker (worker_name, worker_phone, status, id_code, project_id) values (?, ?, ?, ?, ?)";
+        String sql = "insert into tb_worker (worker_name, worker_phone, status, id_code, user_id, project_id) values (?, ?, ?, ?, ?, ?)";
         try{
-            jdbcTemplate.update(sql, worker.getWorkerName(), worker.getWorkerPhone(), worker.getStatus(), worker.getIdCode(), projectId);
+            jdbcTemplate.update(sql, worker.getWorkerName(), worker.getWorkerPhone(), worker.getStatus(), worker.getIdCode(), worker.getUserId(), projectId);
             return new ResponsePack().success();
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,9 +47,9 @@ public class WorkerDao implements WorkerService {
 
     @Override
     public ResponsePack update(Worker worker) {
-        String sql = "update tb_worker set worker_name = ?, worker_phone = ?, status = ?, id_code = ? where worker_id = ?";
+        String sql = "update tb_worker set worker_name = ?, worker_phone = ?, status = ?, id_code = ?, user_id = ? where worker_id = ?";
         try{
-            jdbcTemplate.update(sql, worker.getWorkerName(), worker.getWorkerPhone(), worker.getStatus(), worker.getIdCode(), worker.getWorkerId());
+            jdbcTemplate.update(sql, worker.getWorkerName(), worker.getWorkerPhone(), worker.getStatus(), worker.getIdCode(), worker.getUserId(), worker.getWorkerId());
             return new ResponsePack().success();
         } catch (Exception e) {
             e.printStackTrace();

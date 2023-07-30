@@ -1,8 +1,10 @@
 package com.liuyu.projectmanagement.repository;
 
 import com.liuyu.projectmanagement.entity.Project;
+import com.liuyu.projectmanagement.entity.User;
 import com.liuyu.projectmanagement.pack.ResponsePack;
 import com.liuyu.projectmanagement.service.ProjectService;
+import com.liuyu.projectmanagement.utils.ProjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -51,11 +53,17 @@ public class ProjectDao implements ProjectService {
         String sql = "select * from tb_project where user_id = ? and status != -1";
         this.initRowMapper();
         try {
-            List<Project> list = jdbcTemplate.query(sql, this.rowMapper, userId);
-            return new ResponsePack(list).success();
+            User user = jdbcTemplate.queryForObject("select * from tb_user where user_id = ?", new BeanPropertyRowMapper<>(User.class), userId);
+            if (user.getUserAuth().equals("manager")) {
+                List<Project> list = jdbcTemplate.query(sql, this.rowMapper, userId);
+                return new ResponsePack(list).success();
+            } else {
+                List<Project> list = jdbcTemplate.query("select p.* from tb_project p left join tb_worker w on w.project_id = p.project_id where w.user_id = ? and p.status != -1", this.rowMapper, userId);
+                return new ResponsePack(list).success();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponsePack().fail();
+            return new ResponsePack().fail(ProjectUtils.ERROR_MESSAGE_IN_QUERY);
         }
     }
 

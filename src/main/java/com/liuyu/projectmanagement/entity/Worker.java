@@ -21,6 +21,9 @@ public class Worker extends Base{
     @Column(name = "project_id")
     private String projectId;
 
+    @Column(name = "user_id")
+    private String userId;
+
     public String getWorkerId() {
         return workerId;
     }
@@ -67,5 +70,13 @@ public class Worker extends Base{
 
     public void setProjectId(String projectId) {
         this.projectId = projectId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

@@ -17,6 +17,11 @@ public class UserController {
     private UserService userService;
 
     @ResponseBody
+    @GetMapping("/list")
+    public ResponsePack findAll() {
+        return userService.findAll();
+    }
+    @ResponseBody
     @GetMapping("/all")
     public ResponsePack findAll(@RequestParam String userName, @RequestParam String phoneNum, @RequestParam String status) {
         return userService.findAll(userName, phoneNum, status);
