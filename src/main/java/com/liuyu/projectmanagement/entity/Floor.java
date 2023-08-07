@@ -18,7 +18,7 @@ public class Floor extends Base{
     private String floorInfo; // 楼层信息
 
     @Column(name = "building_id")
-    private int buildingId;
+    private String buildingId;
 
     @Column(name = "progress_per")
     private double progressPer; // 进度
@@ -48,7 +48,7 @@ public class Floor extends Base{
         this.floorName = floorName;
     }
 
-    public int getBuildingId() {
+    public String getBuildingId() {
         return buildingId;
     }
 
@@ -60,7 +60,7 @@ public class Floor extends Base{
         this.floorInfo = floorInfo;
     }
 
-    public void setBuildingId(int buildingId) {
+    public void setBuildingId(String buildingId) {
         this.buildingId = buildingId;
     }
 

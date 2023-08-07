@@ -35,9 +35,9 @@ public class WorkerDao implements WorkerService {
 
     @Override
     public ResponsePack save(Worker worker, String projectId) {
-        String sql = "insert into tb_worker (worker_name, worker_phone, status, id_code, user_id, project_id) values (?, ?, ?, ?, ?, ?)";
+        String sql = "insert into tb_worker (worker_name, worker_phone, status, id_code, bank_card, bank_addr, user_id, project_id) values (?, ?, ?, ?, ?, ?, ?, ?)";
         try{
-            jdbcTemplate.update(sql, worker.getWorkerName(), worker.getWorkerPhone(), worker.getStatus(), worker.getIdCode(), worker.getUserId(), projectId);
+            jdbcTemplate.update(sql, worker.getWorkerName(), worker.getWorkerPhone(), worker.getStatus(), worker.getIdCode(),worker.getBankCard(), worker.getBankAddr(), worker.getUserId(), projectId);
             return new ResponsePack().success();
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,9 +47,9 @@ public class WorkerDao implements WorkerService {
 
     @Override
     public ResponsePack update(Worker worker) {
-        String sql = "update tb_worker set worker_name = ?, worker_phone = ?, status = ?, id_code = ?, user_id = ? where worker_id = ?";
+        String sql = "update tb_worker set worker_name = ?, worker_phone = ?, status = ?, id_code = ?, bank_card=?, bank_addr=?, user_id = ? where worker_id = ?";
         try{
-            jdbcTemplate.update(sql, worker.getWorkerName(), worker.getWorkerPhone(), worker.getStatus(), worker.getIdCode(), worker.getUserId(), worker.getWorkerId());
+            jdbcTemplate.update(sql, worker.getWorkerName(), worker.getWorkerPhone(), worker.getStatus(), worker.getIdCode(), worker.getBankCard(), worker.getBankAddr(), worker.getUserId(), worker.getWorkerId());
             return new ResponsePack().success();
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,6 +75,18 @@ public class WorkerDao implements WorkerService {
         try{
             List<FloorJob> list = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(FloorJob.class), workerId);
             return new ResponsePack(list).success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponsePack().fail(ProjectUtils.ERROR_MESSAGE_IN_QUERY);
+        }
+    }
+
+    @Override
+    public ResponsePack findWorkerId(String userId) {
+        String sql = "select * from tb_worker where user_id = ?";
+        try{
+            Worker w = jdbcTemplate.queryForObject(sql,this.rowMapper, userId);
+            return new ResponsePack(w).success();
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponsePack().fail(ProjectUtils.ERROR_MESSAGE_IN_QUERY);

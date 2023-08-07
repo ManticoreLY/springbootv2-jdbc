@@ -16,4 +16,6 @@ public interface WorkerService {
     ResponsePack remove(String workerId);
 
     ResponsePack listWorkerJob(String workerId);
+
+    ResponsePack findWorkerId(String userId);
 }

@@ -17,9 +17,9 @@ public class UserController {
     private UserService userService;
 
     @ResponseBody
-    @GetMapping("/list")
-    public ResponsePack findAll() {
-        return userService.findAll();
+    @GetMapping("/list/{auth}")
+    public ResponsePack findAll(@PathVariable String auth) {
+        return userService.findAll(auth);
     }
     @ResponseBody
     @GetMapping("/all")

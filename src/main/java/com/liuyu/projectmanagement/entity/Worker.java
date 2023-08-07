@@ -16,6 +16,12 @@ public class Worker extends Base{
     @Column(name = "id_code")
     private String idCode;
 
+    @Column(name = "bank_card")
+    private String bankCard;
+
+    @Column(name = "bank_addr")
+    private String bankAddr;
+
     @Column(name = "project_salary")
     private Double projectSalary;
     @Column(name = "project_id")
@@ -54,6 +60,22 @@ public class Worker extends Base{
 
     public void setIdCode(String idCode) {
         this.idCode = idCode;
+    }
+
+    public String getBankCard() {
+        return bankCard;
+    }
+
+    public void setBankCard(String bankCard) {
+        this.bankCard = bankCard;
+    }
+
+    public String getBankAddr() {
+        return bankAddr;
+    }
+
+    public void setBankAddr(String bankAddr) {
+        this.bankAddr = bankAddr;
     }
 
     public Double getProjectSalary() {

@@ -1,6 +1,7 @@
 package com.liuyu.projectmanagement.repository;
 
 import com.liuyu.projectmanagement.entity.User;
+import com.liuyu.projectmanagement.entity.Worker;
 import com.liuyu.projectmanagement.pack.ResponsePack;
 import com.liuyu.projectmanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +60,11 @@ public class UserDao implements UserService {
     }
 
     @Override
-    public ResponsePack findAll() {
-      String sql = "select * from tb_user where status != -1";
+    public ResponsePack findAll(String auth) {
+        String sql = "select * from tb_user where status != -1";
+        if (!StringUtils.isEmpty(auth) && !auth.equals("undefined")) {
+            sql += " and user_auth in ('user', 'visitor')";
+        }
         try{
             List<User> list = jdbcTemplate.query(sql, this.rowMapper);
             return new ResponsePack(list).success();
@@ -81,10 +85,15 @@ public class UserDao implements UserService {
         for(String key: map.keySet()) {
             String value = map.get(key);
             if (!StringUtils.isEmpty(value)) {
-                sb.append(" and " + key + "= " + value);
+                if (key.equals("status")) {
+                    sb.append(" and " + key + "= '" + value + "'");
+                } else {
+                    sb.append(" and " + key + " like '" + value + "%'");
+                }
             }
         }
         String sql = sb.toString();
+        System.out.println(sql);
         try{
             List<User> list = jdbcTemplate.query(sql, this.rowMapper);
             return new ResponsePack(list).success();
@@ -127,4 +136,5 @@ public class UserDao implements UserService {
             return new ResponsePack().fail();
         }
     }
+
 }

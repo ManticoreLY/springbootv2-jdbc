@@ -63,19 +63,8 @@ public class FloorJobDao implements FloorJobService {
                 "join tb_job j on fj.job_id = j.job_id " +
                 "join tb_building b on f.building_id = b.building_id " +
                 "left join tb_worker w on fj.worker_id = w.worker_id " +
-                "where fj.job_id = ? order by b.building_name, f.floor_name;";
+                "where fj.job_id = ? and f.status != -1 order by b.building_name, f.floor_name;";
         try{
-//            List<Map<String, Object>> list = jdbcTemplate.query(sql, (ResultSet, i) -> {
-//                Map<String, Object> map = new HashMap<>();
-//                map.put("buildingName", ResultSet.getString("building_name"));
-//                map.put("floorId", ResultSet.getString("floor_id"));
-//                map.put("floorName", ResultSet.getString("floor_name"));
-//                map.put("jobId", ResultSet.getString("job_id"));
-//                map.put("jobName", ResultSet.getString("job_name"));
-//                map.put("jobUnit", ResultSet.getString("job_unit"));
-//                map.put("jobPrice", ResultSet.getInt("job_price"));
-//                return map;
-//            }, jobId);
             List<FloorJob> list = jdbcTemplate.query(sql, this.rowMapper, jobId);
             return new ResponsePack(list).success();
         }catch (Exception e) {
@@ -86,7 +75,7 @@ public class FloorJobDao implements FloorJobService {
 
     @Override
     public ResponsePack listFloorJobInfo(String buildingId) {
-        String sql = "select fj.id, fj.floor_id, fj.finish_count, f.floor_name, f.progress_per, fj.job_count, j.job_id, j.job_name, j.job_unit, w.worker_name from tb_floor_job fj join tb_floor f on f.floor_id = fj.floor_id join tb_job j on j.job_id = fj.job_id left join tb_worker w on w.worker_id = fj.worker_id left join tb_building b on b.building_id = f.building_id where b.building_id = ? order by fj.floor_id; ";
+        String sql = "select fj.id, fj.floor_id, fj.finish_count, f.floor_name, f.progress_per, fj.job_count, j.job_id, j.job_name, j.job_unit, w.worker_name from tb_floor_job fj join tb_floor f on f.floor_id = fj.floor_id join tb_job j on j.job_id = fj.job_id left join tb_worker w on w.worker_id = fj.worker_id left join tb_building b on b.building_id = f.building_id where b.building_id = ? and f.status != -1 and j.status != -1 order by fj.floor_id; ";
         try {
             List<FloorJob> list = jdbcTemplate.query(sql, this.rowMapper, buildingId);
             return new ResponsePack(list).success();

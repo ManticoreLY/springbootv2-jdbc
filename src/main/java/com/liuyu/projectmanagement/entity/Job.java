@@ -19,7 +19,7 @@ public class Job extends Base{
     private Double jobPrice;
 
     @Column(name = "project_id")
-    private int projectId;
+    private String projectId;
 
     public String getJobId() {
         return jobId;
@@ -53,11 +53,11 @@ public class Job extends Base{
         this.jobPrice = jobPrice;
     }
 
-    public int getProjectId() {
+    public String getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(int projectId) {
+    public void setProjectId(String projectId) {
         this.projectId = projectId;
     }
 }

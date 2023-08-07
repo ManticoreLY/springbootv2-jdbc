@@ -24,5 +24,6 @@ public interface UserService {
 
     ResponsePack updateUser(User user);
 
-    ResponsePack findAll();
+    ResponsePack findAll(String auth);
+
 }

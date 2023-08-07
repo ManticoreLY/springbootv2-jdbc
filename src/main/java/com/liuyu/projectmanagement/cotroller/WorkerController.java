@@ -43,4 +43,10 @@ public class WorkerController {
     public ResponsePack listJob(@PathVariable String workerId) {
         return workerService.listWorkerJob(workerId);
     }
+
+    @ResponseBody
+    @GetMapping("/user")
+    public ResponsePack findWorker(@CookieValue String userId) {
+        return workerService.findWorkerId(userId);
+    }
 }
