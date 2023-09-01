@@ -25,4 +25,6 @@ public interface FloorJobService extends BaseService<FloorJob>{
     ResponsePack setFinishCount(String id, Double finishCount);
 
     ResponsePack setFloorProgress(String floorId);
+
+    ResponsePack listByFloorId(String floorId);
 }

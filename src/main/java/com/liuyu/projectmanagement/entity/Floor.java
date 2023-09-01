@@ -1,6 +1,7 @@
 package com.liuyu.projectmanagement.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_floor")
@@ -22,6 +23,12 @@ public class Floor extends Base{
 
     @Column(name = "progress_per")
     private double progressPer; // 进度
+
+    @Column(name = "index")
+    private Integer orderIndex; // 排序
+
+    @Transient
+    private List<FloorJob> floorJobs;
 
     @Transient
     private String jobId;
@@ -94,5 +101,21 @@ public class Floor extends Base{
 
     public void setJobStatus(Integer jobStatus) {
         this.jobStatus = jobStatus;
+    }
+
+    public Integer getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(Integer orderIndex) {
+        this.orderIndex = orderIndex;
+    }
+
+    public List<FloorJob> getFloorJobs() {
+        return floorJobs;
+    }
+
+    public void setFloorJobs(List<FloorJob> floorJobs) {
+        this.floorJobs = floorJobs;
     }
 }

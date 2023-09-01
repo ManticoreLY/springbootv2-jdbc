@@ -3,6 +3,7 @@ package com.liuyu.projectmanagement.repository;
 import com.liuyu.projectmanagement.entity.Job;
 import com.liuyu.projectmanagement.pack.ResponsePack;
 import com.liuyu.projectmanagement.service.JobService;
+import com.liuyu.projectmanagement.utils.ProjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -66,4 +67,5 @@ public class JobDao implements JobService {
             return new ResponsePack().fail("System error when delete data!");
         }
     }
+
 }

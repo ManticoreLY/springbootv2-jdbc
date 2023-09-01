@@ -1,12 +1,15 @@
 package com.liuyu.projectmanagement.cotroller;
 
 import com.liuyu.projectmanagement.RequestPack.FloorJobPack;
+import com.liuyu.projectmanagement.RequestPack.FloorPack;
 import com.liuyu.projectmanagement.entity.Floor;
 import com.liuyu.projectmanagement.pack.ResponsePack;
 import com.liuyu.projectmanagement.service.FloorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Controller
@@ -26,6 +29,12 @@ public class FloorController {
     @PostMapping("/save")
     public ResponsePack save(@RequestBody Floor floor) {
         return floorService.save(floor);
+    }
+
+    @ResponseBody
+    @PostMapping("/save/batch")
+    public ResponsePack batchSave(@RequestBody FloorPack floorPack) {
+        return floorService.batchSave(floorPack.getFloorNameList(), floorPack.getBuildingId());
     }
 
     @ResponseBody

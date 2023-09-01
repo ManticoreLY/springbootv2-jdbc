@@ -63,4 +63,10 @@ public class FloorJobController {
     public ResponsePack generateProgress(@RequestParam String floorId) {
         return floorJobService.setFloorProgress(floorId);
     }
+
+    @ResponseBody
+    @GetMapping("/floor/{floorId}")
+    public ResponsePack listByFloorId(@PathVariable String floorId) {
+        return floorJobService.listByFloorId(floorId);
+    }
 }

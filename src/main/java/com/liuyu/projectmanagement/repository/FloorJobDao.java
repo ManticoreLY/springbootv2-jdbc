@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -34,26 +35,48 @@ public class FloorJobDao implements FloorJobService {
 
     @Override
     public ResponsePack batchSaveFloorJob(List<Floor> floorList, List<String> jobIdList) {
-        StringBuilder s = new StringBuilder();
-        s.append("insert into tb_floor_job (floor_id, job_id) values");
-        for(int i = 0; i < floorList.size(); i++) {
-            for(int j = 0; j < jobIdList.size(); j++) {
-                if (i == floorList.size() - 1 && j == jobIdList.size() - 1) s.append(" (\"" + floorList.get(i).getFloorId() + "\", \"" + jobIdList.get(j) +"\");");
-                else s.append(" (\"" + floorList.get(i).getFloorId() + "\", \"" + jobIdList.get(j) +"\"),");
+        List<String> addJobIds = new ArrayList<>();
+        List<String> removeJobIds = new ArrayList<>();
+        if (floorList.size() > 0) {
+            for (Floor floor : floorList) {
+                try {
+                    List<String> existJobIds = jdbcTemplate.queryForList("select job_id from tb_floor_job where floor_id = ?", String.class, floor.getFloorId());
+                    for(int i = 0; i < jobIdList.size(); i++) {
+                        if(existJobIds.indexOf(jobIdList.get(i)) == -1) {
+                            addJobIds.add(jobIdList.get(i));
+                        }
+                    }
+                    for(int i = 0; i < existJobIds.size(); i++) {
+                        if(jobIdList.indexOf(existJobIds.get(i)) == -1) {
+                            removeJobIds.add(existJobIds.get(i));
+                        }
+                    }
+                    // 需要添加的数据
+                    if (addJobIds.size() > 0) {
+                        StringBuilder s = new StringBuilder();
+                        s.append("insert into tb_floor_job (floor_id, job_id) values");
+                        for(int i = 0; i < addJobIds.size(); i++) {
+                            if (i == addJobIds.size() - 1) s.append(" (\"" + floor.getFloorId() + "\", \"" + addJobIds.get(i) +"\");");
+                            else s.append(" (\"" + floor.getFloorId() + "\", \"" + addJobIds.get(i) +"\"),");
+                        }
+                        String sql = s.toString();
+                        System.out.println(sql);
+                        jdbcTemplate.update(sql);
+                    }
+                    // 需要删除的数据
+                    if (removeJobIds.size() > 0) {
+                        for (int i = 0; i < removeJobIds.size(); i++) {
+                            jdbcTemplate.update("delete from tb_floor_job where floor_id = ? and job_id = ?", floor.getFloorId(), removeJobIds.get(i));
+                        }
+                    }
+                    return new ResponsePack().success();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new ResponsePack().fail(ProjectUtils.ERROR_MESSAGE_IN_UPDATE);
+                }
             }
         }
-        String sql = s.toString();
-        System.out.println(sql);
-        try{
-            for (int i = 0; i < floorList.size(); i++) {
-                jdbcTemplate.update("delete from tb_floor_job where floor_id = ?", floorList.get(i).getFloorId());
-            }
-            jdbcTemplate.update(sql);
-            return new ResponsePack().success();
-        }catch (Exception e) {
-            e.printStackTrace();
-            return new ResponsePack().fail("Error occur where batch insert data!");
-        }
+        return new ResponsePack().success();
     }
 
     @Override
@@ -103,9 +126,9 @@ public class FloorJobDao implements FloorJobService {
 
     @Override
     public ResponsePack update(FloorJob floorJob) {
-        String sql = "update tb_floor_job set worker_id = ?, job_count = ? where id = ?";
+        String sql = "update tb_floor_job set worker_id = ?, job_count = ?, finish_count = ?, status = ? where id = ?";
         try{
-            jdbcTemplate.update(sql, floorJob.getWorkerId(), floorJob.getJobCount(), floorJob.getId());
+            jdbcTemplate.update(sql, floorJob.getWorkerId(), floorJob.getJobCount(), floorJob.getFinishCount(), floorJob.getStatus(), floorJob.getId());
             return new ResponsePack().success();
         } catch (Exception e) {
             e.printStackTrace();
@@ -151,6 +174,18 @@ public class FloorJobDao implements FloorJobService {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponsePack().fail();
+        }
+    }
+
+    @Override
+    public ResponsePack listByFloorId(String floorId) {
+        String sql = "select fj.*, j.job_name, j.job_unit, w.worker_name from tb_floor_job fj left join tb_job j on j.job_id = fj.job_id left join tb_worker w on w.worker_id = fj.worker_id where fj.floor_id = ?";
+        try{
+            List list = jdbcTemplate.query(sql, this.rowMapper, floorId);
+            return new ResponsePack(list).success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponsePack().fail(ProjectUtils.ERROR_MESSAGE_IN_QUERY);
         }
     }
 }
